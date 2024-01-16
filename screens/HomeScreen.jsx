@@ -8,26 +8,26 @@ const HomeScreen =({ navigation }) => {
 
     const [isLoading, setIsLoading] = useState(true)
     const [items, setItems] = useState([])
-    const [ord, setQuery] = useState("")
+    const [work, setQuery] = useState("")
     const [clicked, setClicked] = useState(false)
 
 
-    const fetchPosts = () => {
-        setIsLoading(true)
-        axiosInstance
-            .get(`/services/search?query=${ord}`) //запрос на поиск услуг
-            .then(({data}) => {
-                setItems(data["services"])
+    const fetchPosts = () => {  //вызывается в useEffect !!!!!!!!!!!!!!!!!!!!!!!!!
+        setIsLoading(true)  //загрузка началась
+        axiosInstance   //куда отправляется запрос (к API)
+            .get(`/services/search?query=${work}`) //запрос на поиск услуг
+            .then(({data}) => { //вернулось с бэка все услуги
+                setItems(data["services"])  //кладем услуги в массив Items
             })
-            .catch((err) => {
-                alert(err)
+            .catch((err) => {   
+                alert(err)  //вывод ошибки
             })
             .finally(() => {
-                setIsLoading(false)
+                setIsLoading(false) //загрузка закончилась
             })
     }
 
-    useEffect(fetchPosts, [ord])  //этот запрос выполняется каждый раз при изменении состояния строки поиска
+    (fetchPosts, [work])  //этот запрос выполняется каждый раз при изменении состояния строки поиска
 
     const renderItem = ({ item }) => (
         <TouchableOpacity onPress={() => navigation.navigate("FullPost", {id: item.id, name: item.name })}>
@@ -38,7 +38,7 @@ const HomeScreen =({ navigation }) => {
     return (
         <View style={{ paddingBottom: 75 }}>
 
-            <SearchBar searchPhrase={ord} setSearchPhrase={setQuery} clicked={clicked} setClicked={setClicked} />
+            <SearchBar searchPhrase={work} setSearchPhrase={setQuery} clicked={clicked} setClicked={setClicked} />  
 
             <FlatList
                 refreshControl={<RefreshControl refreshing={isLoading} onRefresh={fetchPosts} />}
